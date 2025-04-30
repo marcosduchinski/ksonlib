@@ -1,16 +1,79 @@
-package pt.iscte.mei.pa
+import kotlin.io.encoding.Base64
+import kotlin.reflect.KClass
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-fun main() {
-    val name = "Kotlin"
-    //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-    // to see how IntelliJ IDEA suggests fixing it.
-    println("Hello, " + name + "!")
+/*
+https://www.json.org/json-en.html
+https://datatracker.ietf.org/doc/html/rfc8259
+Goal: Develop classes to represent JSON values (model),
+allowing manipulation operations and serialization to strings (standard format).
 
-    for (i in 1..5) {
-        //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-        // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        println("i = $i")
-    }
+value
+├── object
+│   └── { members }
+│       └── pair (name: value)
+│           ├── string (as name)
+│           └── value (recursive)
+├── array
+│   └── [ elements ]
+│       └── value (recursive)
+├── string
+├── number
+├── true
+├── false
+└── null
+ */
+sealed interface JsonValue {
+    fun asString(): String
+    fun <R> accept(visitor : JsonVisitor<R>) : R
+    //fun map(transform: (JsonValue) -> JsonValue)
+    //fun filter(predicate: (JsonValue) -> Boolean) : JsonValue
 }
+
+interface JsonVisitor<R> {
+    fun visitJsonString(value: JsonString) : R
+    fun visitJsonNumber(value: JsonNumber) : R
+    fun visitJsonBoolean(value: JsonBoolean) : R
+    fun visitJsonNull(value: JsonNull) : R
+    fun visitJsonArray(value: JsonArray) : R
+    fun visitJsonObject(value: JsonObject) : R
+}
+
+data class JsonString(val value: String) : JsonValue {
+    override fun <R> accept(visitor : JsonVisitor<R>) = visitor.visitJsonString(this)
+    override fun asString() =  "not implemented yet"
+}
+data class JsonNumber(val value: Number) : JsonValue {
+    override fun <R> accept(visitor : JsonVisitor<R>) = visitor.visitJsonNumber(this)
+    override fun asString() =  "not implemented yet"
+}
+data class JsonBoolean(val value: Boolean) : JsonValue {
+    override fun <R> accept(visitor : JsonVisitor<R>) = visitor.visitJsonBoolean(this)
+    override fun asString() =  value.toString()
+}
+data class JsonNull(val value: Boolean) : JsonValue {
+    override fun <R> accept(visitor : JsonVisitor<R>) = visitor.visitJsonNull(this)
+    override fun asString() =  "null"
+}
+
+data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
+    override fun <R> accept(visitor : JsonVisitor<R>) = visitor.visitJsonArray(this)
+    override fun asString() =  "not implemented yet"
+    fun add(element: JsonValue) = elements.add(element)
+}
+
+data class JsonObject(val members: MutableMap<JsonString,JsonValue >) : JsonValue {
+    override fun <R> accept(visitor : JsonVisitor<R>) = visitor.visitJsonObject(this)
+    override fun asString() =  "not implemented yet"
+    fun put(key: JsonString, value: JsonValue) = members.put(key, value)
+    fun remove(key: JsonString) = members.remove(key)
+}
+
+
+fun serialize(clazz : KClass<*>): String {
+    //iterate over members (properties and values)
+    return JsonObject(members = mutableMapOf()).asString();
+}
+
+
+
+
