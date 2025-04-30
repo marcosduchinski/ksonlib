@@ -25,8 +25,7 @@ value
 sealed interface JsonValue {
     fun asString(): String
     fun <R> accept(visitor : JsonVisitor<R>) : R
-    //fun map(transform: (JsonValue) -> JsonValue)
-    //fun filter(predicate: (JsonValue) -> Boolean) : JsonValue
+
 }
 
 interface JsonVisitor<R> {
@@ -59,6 +58,9 @@ data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
     override fun <R> accept(visitor : JsonVisitor<R>) = visitor.visitJsonArray(this)
     override fun asString() =  "not implemented yet"
     fun add(element: JsonValue) = elements.add(element)
+    fun map(transform: (JsonValue) -> JsonValue){
+        TODO()
+    }
 }
 
 data class JsonObject(val members: MutableMap<JsonString,JsonValue >) : JsonValue {
@@ -66,6 +68,12 @@ data class JsonObject(val members: MutableMap<JsonString,JsonValue >) : JsonValu
     override fun asString() =  "not implemented yet"
     fun put(key: JsonString, value: JsonValue) = members.put(key, value)
     fun remove(key: JsonString) = members.remove(key)
+    fun map(transform: (JsonValue) -> JsonValue){
+        TODO()
+    }
+    fun filter(predicate: (JsonValue) -> Boolean) : JsonValue {
+        TODO()
+    }
 }
 
 
