@@ -17,7 +17,6 @@ data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
 
     }
 
-    fun add(element: JsonValue) = elements.add(element)
     fun map(transform: (JsonValue) -> JsonValue) {
         TODO()
     }
