@@ -1,4 +1,3 @@
-import model.JsonArray
 import model.JsonBoolean
 import model.JsonNull
 import model.JsonNumber
@@ -22,7 +21,7 @@ class TestCase {
                 "age" to JsonNull()
             )
         )
-        Assertions.assertEquals(validJson, jsonObject.asString())
+        Assertions.assertEquals(validJson, jsonObject.asJson())
     }
     @Test
     fun should_validate_json_object_with_basic_types_and_array() {
