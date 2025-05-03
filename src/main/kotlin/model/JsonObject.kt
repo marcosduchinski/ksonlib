@@ -14,10 +14,6 @@ data class JsonObject(val members: MutableMap<String, JsonValue>) : JsonValue {
         }
     }
 
-    fun put(key: String, value: JsonValue) = members.put(key, value)
-
-    fun remove(key: String) = members.remove(key)
-
     fun map(transform: (JsonValue) -> JsonValue) {
         TODO()
     }
