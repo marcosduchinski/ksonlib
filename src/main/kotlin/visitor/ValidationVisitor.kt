@@ -16,8 +16,11 @@ class ValidationVisitor : JsonVisitor<JsonValue> {
         return value
     }
 
-    private fun validateJsonString(value: JsonString) {
+    private fun validateJsonString(value: JsonString){
 
+        if(value.asJson().length < 2 || value.asJson().first() != '"' || value.asJson().last() != '"'){
+            println("Não sou uma string")
+        }
     }
 
     private fun validateJsonObject(value: JsonObject) {

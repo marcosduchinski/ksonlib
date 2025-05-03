@@ -14,11 +14,9 @@ data class JsonObject(val members: MutableMap<String, JsonValue>) : JsonValue {
         }
     }
 
-    fun map(transform: (JsonValue) -> JsonValue) {
-        TODO()
+    fun filter(predicate: (Map.Entry<String, JsonValue>) -> Boolean): JsonObject {
+        val filteredElements = members.filter(predicate).toMutableMap()
+        return JsonObject(filteredElements)
     }
 
-    fun filter(predicate: (JsonValue) -> Boolean): JsonValue {
-        TODO()
-    }
 }

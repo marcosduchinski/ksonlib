@@ -1,10 +1,7 @@
-import model.JsonBoolean
-import model.JsonNull
-import model.JsonNumber
-import model.JsonObject
-import model.JsonString
+import model.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import visitor.ValidationVisitor
 
 
 class TestCase {
@@ -21,7 +18,19 @@ class TestCase {
                 "age" to JsonNull()
             )
         )
+        val jsonArray = JsonArray(
+            mutableListOf(
+                JsonNumber(1),
+                JsonNumber(45),
+                JsonNumber(2)
+            )
+            )
+        val filteredArray = jsonArray.filter { it is JsonNumber && (it as JsonNumber).value.toInt() > 2 }
+        print(filteredArray)
+
+
         Assertions.assertEquals(validJson, jsonObject.asJson())
+
     }
     @Test
     fun should_validate_json_object_with_basic_types_and_array() {
