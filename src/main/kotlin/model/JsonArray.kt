@@ -8,9 +8,9 @@ data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
         return visitor.visit(this)
     }
 
-    override fun asString(): String {
+    override fun asJson(): String {
         return elements.joinToString(prefix = "[", postfix = "]", separator = ",") {
-            it.asString()
+            it.asJson()
         }
     }
 

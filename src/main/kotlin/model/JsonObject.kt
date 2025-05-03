@@ -8,9 +8,9 @@ data class JsonObject(val members: MutableMap<String, JsonValue>) : JsonValue {
         return visitor.visit(this)
     }
 
-    override fun asString(): String {
+    override fun asJson(): String {
         return members.entries.joinToString(prefix = "{", postfix = "}", separator = ",") {
-            "\"${it.key}\": ${it.value.asString()}"
+            "\"${it.key}\": ${it.value.asJson()}"
         }
     }
 
