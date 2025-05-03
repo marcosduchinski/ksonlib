@@ -9,12 +9,9 @@ data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
     }
 
     override fun asString(): String {
-        val sb = StringBuilder()
-        sb.append("[")
-        sb.append(elements.joinToString(",") { it.asString() })
-        sb.append("]")
-        return sb.toString()
-
+        return elements.joinToString(prefix = "[", postfix = "]", separator = ",") {
+            it.asString()
+        }
     }
 
     fun map(transform: (JsonValue) -> JsonValue) {

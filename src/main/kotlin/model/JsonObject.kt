@@ -9,15 +9,9 @@ data class JsonObject(val members: MutableMap<String, JsonValue>) : JsonValue {
     }
 
     override fun asString(): String {
-        val json = StringBuilder()
-        json.append("{")
-        json.append(
-            members.entries.joinToString(separator = ",") {
-                "\"${it.key}\": ${it.value.asString()}"
-            }
-        )
-        json.append("}")
-        return json.toString()
+        return members.entries.joinToString(prefix = "{", postfix = "}", separator = ",") {
+            "\"${it.key}\": ${it.value.asString()}"
+        }
     }
 
     fun put(key: String, value: JsonValue) = members.put(key, value)
