@@ -1,34 +1,24 @@
-import model.JsonObject
+import model.*
 import kotlin.reflect.KClass
-import kotlin.reflect.full.declaredMembers
+import kotlin.reflect.KParameter
+import kotlin.reflect.KProperty
+import kotlin.reflect.KType
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.primaryConstructor
 
-/*
-https://www.json.org/json-en.html
-https://datatracker.ietf.org/doc/html/rfc8259
-Goal: Develop classes to represent JSON values (model),
-allowing manipulation operations and serialization to strings (standard format).
+class Person(
+    val id: Int,
+    val name: String,
+    val height: Double,
+    val married: Boolean,
+    val age: Int? = null
+)
 
-value
-├── object
-│   └── { members }
-│       └── pair (name: value)
-│           ├── string (as name)
-│           └── value (recursive)
-├── array
-│   └── [ elements ]
-│       └── value (recursive)
-├── string
-├── number
-├── true
-├── false
-└── null
- */
-
-fun serialize(clazz: KClass<*>): String {
-    clazz.declaredMembers.forEach { member ->
-        println(member)
-    }
-    return JsonObject(members = mutableMapOf()).asString();
+fun main() {
+    val customer = Person(99, "Maria", 265.2, married = false)
+    val customerJson = KsonLib(customer).asJson()
+    println()
+    println(customerJson)
 }
 
 
