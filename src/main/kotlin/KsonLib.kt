@@ -2,9 +2,9 @@ import model.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
-import kotlin.reflect.KType
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
+
 
 class KsonLib(val obj: Any?) {
 
@@ -12,28 +12,50 @@ class KsonLib(val obj: Any?) {
         return declaredMemberProperties.first { it.name == parameter.name }
     }
 
-    private fun mapType(type: KType, value: Any?): JsonValue {
+
+    fun mapType(value: Any?): JsonValue {
         if (value == null) {
             return JsonNull()
+        } else if (value.javaClass.isEnum) {
+            return JsonString(value.toString())
+        } else if (value is Int) {
+            return JsonNumber(value)
+        } else if (value is Double) {
+            return JsonNumber(value)
+        } else if (value is String) {
+            return JsonString(value)
+        } else if (value is Boolean) {
+            return JsonBoolean(value)
+        } else if (value::class.isData) {
+            val clazz = value::class
+            val members = mutableMapOf<String, JsonValue>()
+            clazz.primaryConstructor?.parameters?.forEach { p ->
+                val prop = clazz.matchProperty(p)
+                val jsonValue = mapType(prop.call(value))
+                members[prop.name] = jsonValue
+            }
+            return JsonObject(members)
+        } else if (value is List<*>) {
+            val jsonArray = JsonArray(mutableListOf())
+            value.forEach { item ->
+                val jsonValue = mapType(item)
+                jsonArray.elements.add(jsonValue)
+            }
+            return jsonArray
+        } else if (value is Map<*, *>) {
+            val jsonObject = JsonObject(mutableMapOf())
+            value.forEach { (key, item) ->
+                val jsonValue = mapType(item)
+                jsonObject.members[key.toString()] = jsonValue
+            }
+            return jsonObject
+        } else {
+            TODO("Unsupported type: ${value::class.simpleName}")
         }
-        when (type.classifier) {
-            String::class -> return JsonString(value.toString())
-            Boolean::class -> return JsonBoolean(value as Boolean)
-            Int::class -> return JsonNumber(value as Int)
-            Double::class -> return JsonNumber(value as Double)
-            Enum::class -> return JsonString(value.toString())
-            else -> TODO("Unsupported type ${type}")
-        }
+
     }
 
     fun asJson(): String {
-        val clazz = obj!!::class
-        val members = mutableMapOf<String, JsonValue>()
-        clazz.primaryConstructor?.parameters?.forEach { p ->
-            val prop = clazz.matchProperty(p)
-            val jsonValue = mapType(prop.returnType, prop.call(obj))
-            members[prop.name] = jsonValue
-        }
-        return JsonObject(members).asJson()
+        return mapType(obj).asJson()
     }
 }

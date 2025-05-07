@@ -1,26 +1,14 @@
-import model.*
-import kotlin.reflect.KClass
-import kotlin.reflect.KParameter
-import kotlin.reflect.KProperty
-import kotlin.reflect.KType
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.primaryConstructor
-
-class Person(
-    val id: Int,
-    val name: String,
-    val height: Double,
-    val married: Boolean,
-    val age: Int? = null
-)
+data class Course(val name: String, val credits: Int, val evaluation: List<EvalItem>)
+data class EvalItem(val name: String, val percentage: Double, val mandatory: Boolean, val type: EvalType?)
+enum class EvalType { TEST, PROJECT, EXAM }
 
 fun main() {
-    val customer = Person(99, "Maria", 265.2, married = false)
-    val customerJson = KsonLib(customer).asJson()
+    val course =
+        Course("PA", 6, listOf(EvalItem("quizzes", .2, false, null), EvalItem("project", .8, true, EvalType.PROJECT)))
+    val customerJson = KsonLib(course).asJson()
     println()
     println(customerJson)
 }
-
 
 
 
