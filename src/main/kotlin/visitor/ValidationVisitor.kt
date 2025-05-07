@@ -16,34 +16,28 @@ class ValidationVisitor : JsonVisitor<JsonValue> {
         return value
     }
 
-    private fun validateJsonString(value: JsonString){
-
-        if(value.asJson().length < 2 || value.asJson().first() != '"' || value.asJson().last() != '"'){
-            println("Não sou uma string")
+    private fun validateJsonString(value: JsonString) {
+        if (value.asJson().length < 2 || value.asJson().first() != '"' || value.asJson().last() != '"') {
+            throw IllegalArgumentException("Invalid string")
         }
     }
 
     private fun validateJsonObject(value: JsonObject) {
-        val valid = true
-        if (!valid) {
-            throw IllegalArgumentException("Ilnvalid json object")
+        if (value.members.isEmpty())
+            throw IllegalArgumentException("Must have at least one member")
+        value.members.forEach {
+            visit(it.value)
         }
     }
 
-    private fun validateJsonArray(value: JsonArray){
-        val elemento = value.elements
-        if (elemento.isEmpty()) {
-            println("sou um array vazio")
-            return
+    private fun validateJsonArray(value: JsonArray) {
+        if (value.elements.isEmpty()) {
+            throw IllegalArgumentException("Array must not be empty")
         }
-        val firstType = elemento.first()::class
-        for(x in elemento)
-            if (x::class != firstType){
-                println("Não sou uniforme")
-                return
-            }
-        println("Sou uniforme")
+        val firstType = value.elements.first()::class
+        if (!value.elements.all { it::class == firstType }) {
+            throw IllegalArgumentException("All types in array must be the same")
+        }
     }
-
 
 }
