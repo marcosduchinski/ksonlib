@@ -20,13 +20,16 @@ class TestCase {
         )
         val jsonArray = JsonArray(
             mutableListOf(
-                JsonNumber(1),
+                JsonString("hello"),
                 JsonNumber(45),
                 JsonNumber(2)
             )
             )
         val filteredArray = jsonArray.filter { it is JsonNumber && (it as JsonNumber).value.toInt() > 2 }
-        print(filteredArray)
+        //print(filteredArray)
+        val visitor = ValidationVisitor()
+        visitor.visit(jsonArray)
+
 
 
         Assertions.assertEquals(validJson, jsonObject.asJson())

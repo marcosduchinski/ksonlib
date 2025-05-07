@@ -30,8 +30,20 @@ class ValidationVisitor : JsonVisitor<JsonValue> {
         }
     }
 
-    private fun validateJsonArray(value: JsonArray) {
-
+    private fun validateJsonArray(value: JsonArray){
+        val elemento = value.elements
+        if (elemento.isEmpty()) {
+            println("sou um array vazio")
+            return
+        }
+        val firstType = elemento.first()::class
+        for(x in elemento)
+            if (x::class != firstType){
+                println("Não sou uniforme")
+                return
+            }
+        println("Sou uniforme")
     }
+
 
 }
