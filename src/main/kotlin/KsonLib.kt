@@ -1,4 +1,5 @@
 import model.*
+import visitor.ValidationVisitor
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
@@ -22,8 +23,8 @@ class KsonLib(val obj: Any?) {
         value is List<*> -> JsonArray(value.map {
             mapType(it)
         }.toMutableList())
-        value is Map<*, *> -> JsonObject(value.entries.associate {
-            (k, v) -> k.toString() to mapType(v)
+        value is Map<*, *> -> JsonObject(value.entries.associate { (k, v) ->
+            k.toString() to mapType(v)
         }.toMutableMap())
         value::class.isData -> {
             val clazz = value::class
@@ -38,6 +39,9 @@ class KsonLib(val obj: Any?) {
 
 
     fun asJson(): String {
-        return mapType(obj).asJson()
+        val jsonValue = mapType(obj)
+        jsonValue.accept(ValidationVisitor())
+        return jsonValue.asJson()
     }
+
 }
