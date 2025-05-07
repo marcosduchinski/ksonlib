@@ -44,4 +44,22 @@ class KsonLib(val obj: Any?) {
         return jsonValue.asJson()
     }
 
+    fun asJsonValue(): JsonValue {
+        val jsonValue = mapType(obj)
+        jsonValue.accept(ValidationVisitor())
+        return jsonValue
+    }
+
+    fun asJsonObject(): JsonObject {
+        val jsonValue = mapType(obj)
+        jsonValue.accept(ValidationVisitor())
+        return jsonValue as JsonObject
+    }
+
+    fun asJsonArray(): JsonArray {
+        val jsonValue = mapType(obj)
+        jsonValue.accept(ValidationVisitor())
+        return jsonValue as JsonArray
+    }
+
 }

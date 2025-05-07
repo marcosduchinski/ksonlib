@@ -8,9 +8,14 @@ data class JsonObject(val members: MutableMap<String, JsonValue>) : JsonValue {
         return visitor.visit(this)
     }
 
+    fun get(key: String): JsonValue? {
+        members[key]?.let { return it }
+        return null
+    }
+
     override fun asJson(): String {
         return members.entries.joinToString(prefix = "{", postfix = "}", separator = ",") {
-            "\"${it.key}\": ${it.value.asJson()}"
+            "\"${it.key}\":${it.value.asJson()}"
         }
     }
 
@@ -18,5 +23,6 @@ data class JsonObject(val members: MutableMap<String, JsonValue>) : JsonValue {
         val filteredElements = members.filter(predicate).toMutableMap()
         return JsonObject(filteredElements)
     }
+
 
 }

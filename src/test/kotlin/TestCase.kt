@@ -6,6 +6,9 @@ import visitor.ValidationVisitor
 
 class TestCase {
 
+
+
+
     @Test
     fun should_validate_json_object_with_basic_types() {
         val validJson = "{\"id\": 99,\"name\": \"Maria\",\"height\": 165.3,\"married\": true,\"age\": null}"
@@ -29,8 +32,6 @@ class TestCase {
         //print(filteredArray)
         val visitor = ValidationVisitor()
         visitor.visit(jsonArray)
-
-
 
         Assertions.assertEquals(validJson, jsonObject.asJson())
 

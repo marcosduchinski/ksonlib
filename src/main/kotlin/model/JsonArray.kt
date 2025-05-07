@@ -8,6 +8,10 @@ data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
         return visitor.visit(this)
     }
 
+    fun get(index: Int): JsonValue? {
+        return elements.get(index)
+    }
+
     override fun asJson(): String {
         return elements.joinToString(prefix = "[", postfix = "]", separator = ",") {
             it.asJson()
@@ -15,7 +19,7 @@ data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
     }
 
     fun map(transform: (JsonValue) -> JsonValue): JsonArray {
-        val newElements = elements.map { transform(it)}.toMutableList()
+        val newElements = elements.map { transform(it) }.toMutableList()
         return JsonArray(newElements)
     }
 
