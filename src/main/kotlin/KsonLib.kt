@@ -7,14 +7,14 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
 
-class KsonLib(val obj: Any?) {
+class KsonLib(val obj: Any? = null) {
 
     private fun KClass<*>.matchProperty(parameter: KParameter): KProperty<*> {
         return declaredMemberProperties.first { it.name == parameter.name }
     }
 
     private fun mapType(value: Any?): JsonValue = when {
-        value == null -> JsonNull()
+        value == null -> JsonNull
         value.javaClass.isEnum -> JsonString(value.toString())
         value is Int -> JsonNumber(value)
         value is Double -> JsonNumber(value)

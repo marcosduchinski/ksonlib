@@ -1,13 +1,9 @@
-import model.JsonArray
-import model.JsonNumber
-import model.JsonObject
-import model.JsonString
+import model.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class KsonLibTest {
 
@@ -72,6 +68,7 @@ class KsonLibTest {
 
     @Test
     fun should_serialize_course() {
+
         val course = Course(
             "PA",
             6,
@@ -81,23 +78,30 @@ class KsonLibTest {
             )
         )
 
-        val expected =
-            "{\"name\":\"PA\",\"credits\":6,\"" +
-                    "evaluation\":[{\"name\":\"quizzes\"," +
-                    "\"percentage\":0.2," +
-                    "\"mandatory\":false," +
-                    "\"type\":null" +
-                    "}," +
-                    "{\"name\":\"project\"," +
-                    "\"percentage\":0.8," +
-                    "\"mandatory\":true," +
-                    "\"type\":\"PROJECT\"}]" +
-                    "}"
-        Assertions.assertEquals(expected, KsonLib(course).asJson())
+        val expectedJson = JsonObject(
+            "name" to JsonString("PA"),
+            "credits" to JsonNumber(6),
+            "evaluation" to JsonArray(
+                JsonObject(
+                    "name" to JsonString("quizzes"),
+                    "percentage" to JsonNumber(.2),
+                    "mandatory" to JsonBoolean(false),
+                    "type" to JsonNull
+                ),
+                JsonObject(
+                    "name" to JsonString("project"),
+                    "percentage" to JsonNumber(.8),
+                    "mandatory" to JsonBoolean(true),
+                    "type" to JsonString("PROJECT")
+                )
+            )
+        ).asJson()
+
+        Assertions.assertEquals(expectedJson, KsonLib(course).asJson())
     }
 
-    @Test
-    fun should_filter_course() {
+
+    fun getCourses(): List<Course> {
         val pa = Course(
             "PA",
             6,
@@ -116,21 +120,108 @@ class KsonLibTest {
             )
         )
 
-        val courses = listOf<Course>(pa,robotica)
+        return listOf<Course>(pa, robotica)
+    }
+
+    @Test
+    fun should_filter_course() {
+
+        val courses = getCourses()
+
+        val expectedJson = JsonArray(
+            JsonObject(
+                "name" to JsonString("PA"),
+                "credits" to JsonNumber(6),
+                "evaluation" to JsonArray(
+                    JsonObject(
+                        "name" to JsonString("quizzes"),
+                        "percentage" to JsonNumber(.2),
+                        "mandatory" to JsonBoolean(false),
+                        "type" to JsonNull
+                    ),
+                    JsonObject(
+                        "name" to JsonString("project"),
+                        "percentage" to JsonNumber(.8),
+                        "mandatory" to JsonBoolean(true),
+                        "type" to JsonString("PROJECT")
+                    )
+                )
+            )
+        ).asJson()
 
         val jsonArray = KsonLib(courses).asJsonArray()
         assertNotNull(jsonArray)
-        println(jsonArray.asJson())
-
-        val expectedPA = "[{\"name\":\"PA\",\"credits\":6,\"evaluation\":[{\"name\":\"quizzes\",\"percentage\":0.2,\"mandatory\":false,\"type\":null},{\"name\":\"project\",\"percentage\":0.8,\"mandatory\":true,\"type\":\"PROJECT\"}]}]"
 
         val jsonPA = jsonArray.filter {
-            it is JsonObject && it.get("name")!!.asJson() =="\"PA\""
-        }.filter {
-            it is JsonObject
+            it is JsonObject && it.get("name")!!.asJson() == "\"PA\""
         }.asJson()
 
-        assertEquals(expectedPA, jsonPA)
+        assertEquals(expectedJson, jsonPA)
+    }
+
+    @Test
+    fun should_map_course() {
+
+        val courses = getCourses()
+
+        val expectedJson = JsonArray(
+            JsonObject(
+                "name" to JsonString("PA"),
+                "credits" to JsonNumber(12.0),
+                "evaluation" to JsonArray(
+                    JsonObject(
+                        "name" to JsonString("quizzes"),
+                        "percentage" to JsonNumber(.2),
+                        "mandatory" to JsonBoolean(false),
+                        "type" to JsonNull
+                    ),
+                    JsonObject(
+                        "name" to JsonString("project"),
+                        "percentage" to JsonNumber(.8),
+                        "mandatory" to JsonBoolean(true),
+                        "type" to JsonString("PROJECT")
+                    )
+                )
+            ),
+            JsonObject(
+                "name" to JsonString("ROBOTICA"),
+                "credits" to JsonNumber(12.0),
+                "evaluation" to JsonArray(
+                    JsonObject(
+                        "name" to JsonString("test"),
+                        "percentage" to JsonNumber(.5),
+                        "mandatory" to JsonBoolean(true),
+                        "type" to JsonString("TEST")
+                    ),
+                    JsonObject(
+                        "name" to JsonString("project"),
+                        "percentage" to JsonNumber(.5),
+                        "mandatory" to JsonBoolean(true),
+                        "type" to JsonString("PROJECT")
+                    )
+                )
+            )
+        ).asJson()
+
+        val jsonArray = KsonLib(courses).asJsonArray()
+        assertNotNull(jsonArray)
+
+        val jsonPA = jsonArray.map { jsonValue ->
+            if (jsonValue is JsonObject) {
+                val updatedMembers = jsonValue.members.mapValues { (_, value) ->
+                    if (value is JsonNumber) {
+                        JsonNumber(value.asFloat() * 2)
+                    } else {
+                        value
+                    }
+                }
+                JsonObject(*updatedMembers.toList().toTypedArray())
+            } else {
+                jsonValue
+            }
+        }.asJson()
+
+        assertEquals(expectedJson, jsonPA)
     }
 }
 

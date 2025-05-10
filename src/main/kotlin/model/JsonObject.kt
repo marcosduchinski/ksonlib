@@ -2,8 +2,11 @@ package model
 
 import visitor.JsonVisitor
 
-data class JsonObject(val members: MutableMap<String, JsonValue>) : JsonValue {
-    override fun <R> accept(visitor: JsonVisitor<R>): R {
+data class JsonObject (val members: MutableMap<String, JsonValue>) : JsonValue {
+
+    constructor(vararg pairs: Pair<String, JsonValue>) : this(mutableMapOf(*pairs))
+
+    override fun accept(visitor: JsonVisitor) {
         members.forEach { it.value.accept(visitor) }
         return visitor.visit(this)
     }
@@ -23,6 +26,5 @@ data class JsonObject(val members: MutableMap<String, JsonValue>) : JsonValue {
         val filteredElements = members.filter(predicate).toMutableMap()
         return JsonObject(filteredElements)
     }
-
 
 }

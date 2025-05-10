@@ -3,9 +3,12 @@ package model
 import visitor.JsonVisitor
 
 data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
-    override fun <R> accept(visitor: JsonVisitor<R>): R {
+
+    constructor(vararg elements: JsonValue) : this(mutableListOf(*elements))
+
+    override fun accept(visitor: JsonVisitor) {
         elements.forEach { it.accept(visitor) }
-        return visitor.visit(this)
+        visitor.visit(this)
     }
 
     fun get(index: Int): JsonValue? {

@@ -2,7 +2,7 @@ package model
 
 import visitor.JsonVisitor
 
-class JsonNull() : JsonValue {
-    override fun <R> accept(visitor: JsonVisitor<R>) = visitor.visit(this)
+object JsonNull : JsonValue {
+    override fun accept(visitor: JsonVisitor) = visitor.visit(this)
     override fun asJson() = "null"
 }
