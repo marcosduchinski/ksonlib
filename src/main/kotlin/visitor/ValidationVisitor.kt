@@ -2,7 +2,6 @@ package visitor
 
 import model.JsonArray
 import model.JsonObject
-import model.JsonString
 import model.JsonValue
 
 class ValidationVisitor : JsonVisitor {

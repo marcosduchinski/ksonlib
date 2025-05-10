@@ -1,3 +1,4 @@
+import exception.UnsupportedJsonValueType
 import model.*
 import visitor.ValidationVisitor
 import kotlin.reflect.KClass
@@ -23,9 +24,11 @@ class KsonLib(val obj: Any? = null) {
         value is List<*> -> JsonArray(value.map {
             mapType(it)
         }.toMutableList())
+
         value is Map<*, *> -> JsonObject(value.entries.associate { (k, v) ->
             k.toString() to mapType(v)
         }.toMutableMap())
+
         value::class.isData -> {
             val clazz = value::class
             val members = clazz.primaryConstructor?.parameters?.associate { param ->
@@ -34,7 +37,8 @@ class KsonLib(val obj: Any? = null) {
             } ?: emptyMap()
             JsonObject(members.toMutableMap())
         }
-        else -> TODO("Unsupported type: ${value::class.simpleName}")
+
+        else -> throw UnsupportedJsonValueType(value)
     }
 
 
@@ -61,5 +65,4 @@ class KsonLib(val obj: Any? = null) {
         jsonValue.accept(ValidationVisitor())
         return jsonValue as JsonArray
     }
-
 }

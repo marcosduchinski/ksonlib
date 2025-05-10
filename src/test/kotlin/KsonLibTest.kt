@@ -1,3 +1,4 @@
+import exception.UnsupportedJsonValueType
 import model.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -55,6 +56,27 @@ class KsonLibTest {
         val emptyList = emptyList<String>()
         assertThrows<IllegalArgumentException> {
             KsonLib(emptyList).asJson()
+        }
+    }
+
+    @Test
+    fun should_throw_unsupported_type_exception() {
+        val unsupportedType = arrayOf<Number>(1,2,3)
+        assertThrows<UnsupportedJsonValueType> {
+            KsonLib(unsupportedType).asJson()
+        }
+        val unsupportedListType = listOf<Array<Number>>(
+            arrayOf(1,2,3),
+            arrayOf<Number>(1,2,3)
+        )
+        assertThrows<UnsupportedJsonValueType> {
+            KsonLib(unsupportedListType).asJson()
+        }
+        val unsupportedMapType = mapOf<String, Array<Number>>(
+            "1" to arrayOf(1,2,3)
+        )
+        assertThrows<UnsupportedJsonValueType> {
+            KsonLib(unsupportedMapType).asJson()
         }
     }
 
