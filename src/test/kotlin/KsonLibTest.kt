@@ -1,4 +1,6 @@
-import exception.UnsupportedJsonValueType
+import exception.JsonValueClassCastException
+import exception.JsonValueUnsupportedTypeException
+import exception.JsonValueValidationException
 import model.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -52,9 +54,9 @@ class KsonLibTest {
     }
 
     @Test
-    fun should_throw_illegal_argument_exception_to_empty_list() {
+    fun should_throw_jsonvalue_validation_exception_to_empty_list() {
         val emptyList = emptyList<String>()
-        assertThrows<IllegalArgumentException> {
+        assertThrows<JsonValueValidationException> {
             KsonLib(emptyList).asJson()
         }
     }
@@ -62,29 +64,60 @@ class KsonLibTest {
     @Test
     fun should_throw_unsupported_type_exception() {
         val unsupportedType = arrayOf<Number>(1,2,3)
-        assertThrows<UnsupportedJsonValueType> {
+        assertThrows<JsonValueUnsupportedTypeException> {
             KsonLib(unsupportedType).asJson()
         }
         val unsupportedListType = listOf<Array<Number>>(
             arrayOf(1,2,3),
             arrayOf<Number>(1,2,3)
         )
-        assertThrows<UnsupportedJsonValueType> {
+        assertThrows<JsonValueUnsupportedTypeException> {
             KsonLib(unsupportedListType).asJson()
         }
         val unsupportedMapType = mapOf<String, Array<Number>>(
             "1" to arrayOf(1,2,3)
         )
-        assertThrows<UnsupportedJsonValueType> {
+        assertThrows<JsonValueUnsupportedTypeException> {
             KsonLib(unsupportedMapType).asJson()
+        }
+        val mapOfJsonValue = mapOf<String, JsonString>(
+            "key" to JsonString("value")
+        )
+        assertThrows<JsonValueUnsupportedTypeException> {
+            KsonLib(mapOfJsonValue).asJsonArray()
+        }
+
+        val mapOfArray = mapOf<String, Array<Number>>(
+            "key" to arrayOf(1,2,3)
+        )
+        assertThrows<JsonValueUnsupportedTypeException> {
+            KsonLib(mapOfArray).asJsonArray()
         }
     }
 
     @Test
-    fun should_throw_illegal_argument_exception_to_empty_map() {
+    fun should_throw_jsonvalue_validation_exception_to_empty_map() {
         val emptyMap = emptyMap<String, String>()
-        assertThrows<IllegalArgumentException> {
+        assertThrows<JsonValueValidationException> {
             KsonLib(emptyMap).asJson()
+        }
+    }
+
+    @Test
+    fun should_throw_jsonvalue_cast_class_exception_json_object() {
+        val mapOfJsonValue = mapOf<String, String>(
+            "key" to "value",
+        )
+        assertThrows<JsonValueClassCastException> {
+            KsonLib(mapOfJsonValue).asJsonArray()
+        }
+    }
+
+    @Test
+    fun should_throw_jsonvalue_cast_class_exception_json_array() {
+        val mapOfJsonValue = listOf<Int>(1,2,3)
+        assertThrows<JsonValueClassCastException> {
+            KsonLib(mapOfJsonValue).asJsonObject()
         }
     }
 
@@ -118,10 +151,8 @@ class KsonLibTest {
                 )
             )
         ).asJson()
-
         Assertions.assertEquals(expectedJson, KsonLib(course).asJson())
     }
-
 
     fun getCourses(): List<Course> {
         val pa = Course(

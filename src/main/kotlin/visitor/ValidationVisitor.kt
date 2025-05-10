@@ -1,5 +1,6 @@
 package visitor
 
+import exception.JsonValueValidationException
 import model.JsonArray
 import model.JsonObject
 import model.JsonValue
@@ -15,7 +16,7 @@ class ValidationVisitor : JsonVisitor {
 
     private fun validateJsonObject(value: JsonObject) {
         if (value.members.isEmpty())
-            throw IllegalArgumentException("JsonObject must have at least one member")
+            throw JsonValueValidationException("JsonObject must have at least one member")
         value.members.forEach {
             visit(it.value)
         }
@@ -23,11 +24,11 @@ class ValidationVisitor : JsonVisitor {
 
     private fun validateJsonArray(value: JsonArray) {
         if (value.elements.isEmpty()) {
-            throw IllegalArgumentException("Array must not be empty")
+            throw JsonValueValidationException("Array must not be empty")
         }
         val firstType = value.elements.first()::class
         if (!value.elements.all { it::class == firstType }) {
-            throw IllegalArgumentException("All types in array must be the same")
+            throw JsonValueValidationException("All types in array must be the same")
         }
     }
 

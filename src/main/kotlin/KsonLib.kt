@@ -1,4 +1,5 @@
-import exception.UnsupportedJsonValueType
+import exception.JsonValueClassCastException
+import exception.JsonValueUnsupportedTypeException
 import model.*
 import visitor.ValidationVisitor
 import kotlin.reflect.KClass
@@ -29,7 +30,7 @@ class KsonLib(val obj: Any? = null) {
             k.toString() to mapType(v)
         }.toMutableMap())
 
-        value::class.isData -> {
+        value::class.isData && value !is JsonValue -> {
             val clazz = value::class
             val members = clazz.primaryConstructor?.parameters?.associate { param ->
                 val prop = clazz.matchProperty(param)
@@ -38,7 +39,7 @@ class KsonLib(val obj: Any? = null) {
             JsonObject(members.toMutableMap())
         }
 
-        else -> throw UnsupportedJsonValueType(value)
+        else -> throw JsonValueUnsupportedTypeException(value)
     }
 
 
@@ -57,12 +58,12 @@ class KsonLib(val obj: Any? = null) {
     fun asJsonObject(): JsonObject {
         val jsonValue = mapType(obj)
         jsonValue.accept(ValidationVisitor())
-        return jsonValue as JsonObject
+        return jsonValue as? JsonObject ?: throw JsonValueClassCastException(jsonValue)
     }
 
     fun asJsonArray(): JsonArray {
         val jsonValue = mapType(obj)
         jsonValue.accept(ValidationVisitor())
-        return jsonValue as JsonArray
+        return jsonValue as? JsonArray ?: throw JsonValueClassCastException(jsonValue)
     }
 }
