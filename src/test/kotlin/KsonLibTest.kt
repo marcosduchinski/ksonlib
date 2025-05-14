@@ -200,14 +200,14 @@ class KsonLibTest {
                     )
                 )
             )
-        ).asJson()
+        )
 
         val jsonArray = KsonLib(courses).asJsonArray()
         assertNotNull(jsonArray)
 
         val jsonPA = jsonArray.filter {
             it is JsonObject && it.get("name")!!.asJson() == "\"PA\""
-        }.asJson()
+        }
 
         assertEquals(expectedJson, jsonPA)
     }
@@ -254,7 +254,7 @@ class KsonLibTest {
                     )
                 )
             )
-        ).asJson()
+        )
 
         val jsonArray = KsonLib(courses).asJsonArray()
         assertNotNull(jsonArray)
@@ -263,7 +263,7 @@ class KsonLibTest {
             if (jsonValue is JsonObject) {
                 val updatedMembers = jsonValue.members.mapValues { (_, value) ->
                     if (value is JsonNumber) {
-                        JsonNumber(value.asFloat() * 2)
+                        JsonNumber(value.asDouble() * 2)
                     } else {
                         value
                     }
@@ -272,7 +272,7 @@ class KsonLibTest {
             } else {
                 jsonValue
             }
-        }.asJson()
+        }
 
         assertEquals(expectedJson, jsonPA)
     }
