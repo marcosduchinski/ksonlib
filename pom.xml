@@ -6,7 +6,7 @@
 
     <groupId>pt.iscte.mei.pa</groupId>
     <artifactId>ksonlib</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <packaging>jar</packaging>
 
     <properties>
