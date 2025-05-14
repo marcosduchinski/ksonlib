@@ -27,4 +27,4 @@ jobs:
       with:
         files: target/*.jar
       env:
-        GITHUB_TOKEN: ${{ secrets.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 }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
