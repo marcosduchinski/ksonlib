@@ -1,0 +1,30 @@
+name: Build and Release JAR
+
+on:
+  push:
+    tags:
+      - 'v*'  # triggers when a tag like v1.0.0 is pushed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Build with Maven
+      run: mvn clean package
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: target/*.jar
+      env:
+        GITHUB_TOKEN: ${{ secrets.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 }}
