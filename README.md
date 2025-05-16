@@ -1,3 +1,4 @@
-# TODO LIST
 
-1. 
+## uso da lib
+
+https://github.com/marcosduchinski/getjson
