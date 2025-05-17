@@ -39,7 +39,7 @@ class KsonLib(val obj: Any? = null) {
             JsonObject(members.toMutableMap())
         }
 
-        else -> throw JsonValueUnsupportedTypeException(value)
+        else -> throw JsonValueUnsupportedTypeException(value::class)
     }
 
 
@@ -58,12 +58,12 @@ class KsonLib(val obj: Any? = null) {
     fun asJsonObject(): JsonObject {
         val jsonValue = mapType(obj)
         jsonValue.accept(ValidationVisitor())
-        return jsonValue as? JsonObject ?: throw JsonValueClassCastException(jsonValue)
+        return jsonValue as? JsonObject ?: throw JsonValueClassCastException(jsonValue::class)
     }
 
     fun asJsonArray(): JsonArray {
         val jsonValue = mapType(obj)
         jsonValue.accept(ValidationVisitor())
-        return jsonValue as? JsonArray ?: throw JsonValueClassCastException(jsonValue)
+        return jsonValue as? JsonArray ?: throw JsonValueClassCastException(jsonValue::class)
     }
 }
