@@ -7,12 +7,12 @@ data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
     constructor(vararg elements: JsonValue) : this(mutableListOf(*elements))
 
     override fun accept(visitor: JsonVisitor) {
-        elements.forEach { it.accept(visitor) }
         visitor.visit(this)
+        elements.forEach { it.accept(visitor) }
     }
 
-    fun get(index: Int): JsonValue? {
-        return elements.get(index)
+    operator fun get(index: Int): JsonValue? {
+        return elements.getOrNull(index)
     }
 
     override fun asJson(): String {
