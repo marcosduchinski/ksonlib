@@ -2,19 +2,16 @@ package model
 
 import visitor.JsonVisitor
 
-data class JsonObject (val members: MutableMap<String, JsonValue>) : JsonValue {
+data class JsonObject (val members: Map<String, JsonValue>) : JsonValue {
 
     constructor(vararg pairs: Pair<String, JsonValue>) : this(mutableMapOf(*pairs))
 
     override fun accept(visitor: JsonVisitor) {
+        visitor.visit(this)
         members.forEach { it.value.accept(visitor) }
-        return visitor.visit(this)
     }
 
-    fun get(key: String): JsonValue? {
-        members[key]?.let { return it }
-        return null
-    }
+    fun get(key: String): JsonValue? = members[key]
 
     override fun asJson(): String {
         return members.entries.joinToString(prefix = "{", postfix = "}", separator = ",") {
