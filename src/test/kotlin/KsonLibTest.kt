@@ -108,7 +108,7 @@ class KsonLibTest {
         val mapOfJsonValue = mapOf<String, String>(
             "key" to "value",
         )
-        assertThrows<JsonValueClassCastException> {
+        assertThrows<ClassCastException> {
             KsonLib(mapOfJsonValue).asJsonArray()
         }
     }
@@ -150,8 +150,8 @@ class KsonLibTest {
                     "type" to JsonString("PROJECT")
                 )
             )
-        ).asJson()
-        Assertions.assertEquals(expectedJson, KsonLib(course).asJson())
+        )
+        Assertions.assertEquals(expectedJson, KsonLib(course).asJsonObject())
     }
 
     fun getCourses(): List<Course> {
