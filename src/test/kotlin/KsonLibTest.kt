@@ -62,6 +62,14 @@ class KsonLibTest {
     }
 
     @Test
+    fun should_throw_jsonvalue_validation_exception_to_list_with_different_tyes() {
+        val emptyList = mutableListOf("two",2)
+        assertThrows<JsonValueValidationException> {
+            KsonLib(emptyList).asJson()
+        }
+    }
+
+    @Test
     fun should_throw_unsupported_type_exception() {
         val unsupportedType = arrayOf<Number>(1,2,3)
         assertThrows<JsonValueUnsupportedTypeException> {
@@ -108,7 +116,7 @@ class KsonLibTest {
         val mapOfJsonValue = mapOf<String, String>(
             "key" to "value",
         )
-        assertThrows<ClassCastException> {
+        assertThrows<JsonValueClassCastException> {
             KsonLib(mapOfJsonValue).asJsonArray()
         }
     }
