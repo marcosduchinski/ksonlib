@@ -2,6 +2,12 @@ package model
 
 import visitor.JsonVisitor
 
+/**
+ * JsonArray represents a JSON array.
+ *
+ * @property elements The list of JSON values to serialize to JSON format list.
+ *
+ */
 data class JsonArray(val elements: MutableList<JsonValue>) : JsonValue {
 
     constructor(vararg elements: JsonValue) : this(mutableListOf(*elements))

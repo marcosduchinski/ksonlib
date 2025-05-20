@@ -8,6 +8,9 @@ import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
+/**
+ * KsonLibTest is a test class for the KsonLib library.
+ */
 class KsonLibTest {
 
     data class Course(val name: String, val credits: Int, val evaluation: List<EvalItem>)

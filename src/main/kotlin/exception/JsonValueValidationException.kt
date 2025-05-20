@@ -15,5 +15,3 @@ class JsonValueValidationException(val customMessage: String) : Exception() {
      */
     get() = "JsonValue not valid: ${customMessage}"
 }
-
-//changed the signature

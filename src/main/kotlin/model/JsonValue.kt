@@ -14,6 +14,7 @@ import visitor.JsonVisitor
  * - A JsonNumber
  * - A JsonBoolean
  * - A JsonNull
+ *  @see https://kotlinlang.org/docs/sealed-classes.html
  */
 sealed interface JsonValue {
     /**
