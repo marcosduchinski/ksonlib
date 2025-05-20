@@ -1,0 +1,105 @@
+@startuml
+
+' ============================================================
+'      https://plantuml.com/class-diagram
+' ============================================================
+left to right direction
+
+package "model" #DDDDDD {
+
+  interface JsonValue {
+        +asJson(): String
+        +accept(visitor: JsonVisitor): void
+    }
+
+    ' ============================================================
+    '                JsonValue Implementations
+    ' ============================================================
+    class JsonObject {
+        -members: Map<String, JsonValue>
+        +get(key: String): JsonValue?
+        +asJson(): String
+        +accept(visitor: JsonVisitor): void
+        +filter(predicate): JsonObject
+    }
+
+    class JsonArray {
+        -elements: MutableList<JsonValue>
+        +get(index: Int): JsonValue?
+        +asJson(): String
+        +accept(visitor: JsonVisitor): void
+        +map(transform): JsonArray
+        +filter(predicate): JsonArray
+    }
+
+    class JsonString {
+        -value: String
+        +asJson(): String
+        +accept(visitor: JsonVisitor): void
+    }
+
+    class JsonNumber {
+        -value: Number
+        +asJson(): String
+        +accept(visitor: JsonVisitor): void
+        +asInt(): Int
+        +asLong(): Long
+        +asFloat(): Float
+        +asDouble(): Double
+    }
+
+    class JsonBoolean {
+        -value: Boolean
+        +asJson(): String
+        +accept(visitor: JsonVisitor): void
+    }
+
+    class JsonNull {
+        +asJson(): String
+        +accept(visitor: JsonVisitor): void
+    }
+
+}
+package visitor #DDDDDD {
+
+    interface JsonVisitor {
+        +visit(value: JsonValue): void
+    }
+    ' ============================================================
+    '             Visitor Implementation
+    ' ============================================================
+    class ValidationVisitor {
+        +visit(value: JsonValue): void
+    }
+}
+
+' ============================================================
+'              Main Class
+' ============================================================
+
+class KsonLib {
+    -obj: Any?
+    +asJson(): String
+    +asJsonValue(): JsonValue
+    +asJsonObject(): JsonObject
+    +asJsonArray(): JsonArray
+}
+
+' ============================================================
+'                        Relationships
+' ============================================================
+
+JsonObject     --|> JsonValue
+JsonArray      --|> JsonValue
+JsonString     --|> JsonValue
+JsonNumber     --|> JsonValue
+JsonBoolean    --|> JsonValue
+JsonNull       --|> JsonValue
+
+ValidationVisitor --|> JsonVisitor
+
+JsonValue --> JsonVisitor : accept(visitor)
+
+KsonLib --> JsonValue
+
+@enduml
