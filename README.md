@@ -1,7 +1,5 @@
 
-# Example of library use:
 
-https://github.com/marcosduchinski/getjson
 
 # Tutorial: Getting Started with KsonLib
 
@@ -37,6 +35,11 @@ val jsonObject = KsonLib(course).asJsonObject()
 val nameValue = jsonObject.get("name")
 println(nameValue?.asJson())  // Output: "Kotlin Basics"
 ```
+
+
+# Example of how to use the library:
+
+https://github.com/marcosduchinski/getjson
 
 ---
 
