@@ -1,5 +1,5 @@
 
-## uso da lib
+# Example of library use:
 
 https://github.com/marcosduchinski/getjson
 
