@@ -42,5 +42,3 @@ println(nameValue?.asJson())  // Output: "Kotlin Basics"
 https://github.com/marcosduchinski/getjson
 
 ---
-
-That's it! You've just converted a Kotlin object into JSON using KsonLib.
