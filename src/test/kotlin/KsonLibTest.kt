@@ -54,36 +54,51 @@ class KsonLibTest {
     }
 
     @Test
-    fun should_throw_jsonvalue_validation_exception_to_empty_list() {
+    fun should_serialize_empty_list() {
         val emptyList = emptyList<String>()
+        val expected = JsonArray()
+        Assertions.assertEquals(expected, (KsonLib(emptyList).asJsonArray()))
+    }
+
+    @Test
+    fun should_serialize_empty_map() {
+        val emptyMap = emptyMap<String, String>()
+        val expected = JsonObject()
+        Assertions.assertEquals(expected, (KsonLib(emptyMap).asJsonObject()))
+    }
+
+    @Test
+    fun should_throw_jsonvalue_validation_exception_to_list_with_different_tyes() {
+        val emptyList = mutableListOf("two", 2)
         assertThrows<JsonValueValidationException> {
             KsonLib(emptyList).asJson()
         }
     }
 
     @Test
-    fun should_throw_jsonvalue_validation_exception_to_list_with_different_tyes() {
-        val emptyList = mutableListOf("two",2)
+    fun should_throw_jsonvalue_validation_exception_to_map_containing_list_with_different_tyes() {
+        val listWithDifferentTypes = mutableListOf("two", 2)
+        val map = mapOf<String, List<Any>>("different" to listWithDifferentTypes)
         assertThrows<JsonValueValidationException> {
-            KsonLib(emptyList).asJson()
+            KsonLib(map).asJson()
         }
     }
 
     @Test
     fun should_throw_unsupported_type_exception() {
-        val unsupportedType = arrayOf<Number>(1,2,3)
+        val unsupportedType = arrayOf<Number>(1, 2, 3)
         assertThrows<JsonValueUnsupportedTypeException> {
             KsonLib(unsupportedType).asJson()
         }
         val unsupportedListType = listOf<Array<Number>>(
-            arrayOf(1,2,3),
-            arrayOf<Number>(1,2,3)
+            arrayOf(1, 2, 3),
+            arrayOf<Number>(1, 2, 3)
         )
         assertThrows<JsonValueUnsupportedTypeException> {
             KsonLib(unsupportedListType).asJson()
         }
         val unsupportedMapType = mapOf<String, Array<Number>>(
-            "1" to arrayOf(1,2,3)
+            "1" to arrayOf(1, 2, 3)
         )
         assertThrows<JsonValueUnsupportedTypeException> {
             KsonLib(unsupportedMapType).asJson()
@@ -96,18 +111,10 @@ class KsonLibTest {
         }
 
         val mapOfArray = mapOf<String, Array<Number>>(
-            "key" to arrayOf(1,2,3)
+            "key" to arrayOf(1, 2, 3)
         )
         assertThrows<JsonValueUnsupportedTypeException> {
             KsonLib(mapOfArray).asJsonArray()
-        }
-    }
-
-    @Test
-    fun should_throw_jsonvalue_validation_exception_to_empty_map() {
-        val emptyMap = emptyMap<String, String>()
-        assertThrows<JsonValueValidationException> {
-            KsonLib(emptyMap).asJson()
         }
     }
 
@@ -123,7 +130,7 @@ class KsonLibTest {
 
     @Test
     fun should_throw_jsonvalue_cast_class_exception_json_array() {
-        val mapOfJsonValue = listOf<Int>(1,2,3)
+        val mapOfJsonValue = listOf<Int>(1, 2, 3)
         assertThrows<JsonValueClassCastException> {
             KsonLib(mapOfJsonValue).asJsonObject()
         }
