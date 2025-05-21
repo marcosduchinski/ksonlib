@@ -5,28 +5,34 @@ import visitor.JsonVisitor
 /**
  * *Interface*
  *
- * This interface represents a JsonValue.
- * Following the JSON built definition, available in https://www.json.org/json-en.html,
- * a JsonValue can be:
- * - A JsonObject
- * - A JsonArray
- * - A JsonString
- * - A JsonNumber
- * - A JsonBoolean
- * - A JsonNull
- *  @see https://kotlinlang.org/docs/sealed-classes.html
+ * A sealed interface representing any valid JSON value.
+ *
+ * According to the JSON specification ([json.org](https://www.json.org/json-en.html)),
+ * a JSON value can be one of the following:
+ * - [JsonObject]
+ * - [JsonArray]
+ * - [JsonString]
+ * - [JsonNumber]
+ * - [JsonBoolean]
+ * - [JsonNull]
+ *
+ * This interface is sealed to allow exhaustive when-expressions when working with known implementations.
+ *
+ * @see https://kotlinlang.org/docs/sealed-classes.html
  */
 sealed interface JsonValue {
+
     /**
-     * Convert the JsonValue to a JSON string representation.
+     * Converts this [JsonValue] to its JSON string representation.
      *
-     * @return The JSON string representation of the JsonValue.
+     * @return A JSON-compliant string.
      */
     fun asJson(): String
+
     /**
-     * Accept a visitor to perform operations on the JsonValue.
+     * Accepts a [JsonVisitor] to perform operations based on the Visitor pattern.
      *
-     * @param visitor The visitor to accept.
+     * @param visitor The visitor that will process this JSON value.
      */
     fun accept(visitor: JsonVisitor)
 }

@@ -9,7 +9,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 /**
- * KsonLibTest is a test class for the KsonLib library.
+ * Test suite for the [KsonLib] JSON serialization library.
+ *
+ * This class verifies correct serialization of basic Kotlin types,
+ * collections, enums, and custom data classes.
+ *
+ * It also tests that validation and error handling (e.g., unsupported types,
+ * type mismatches in arrays, and class cast exceptions) are properly triggered.
  */
 class KsonLibTest {
 

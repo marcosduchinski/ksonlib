@@ -3,19 +3,14 @@ package exception
 import kotlin.reflect.KClass
 
 /**
- * *Custom Exception*
+ * Custom exception thrown when a [JsonValue] cannot be cast to the expected type.
  *
- * This class represents a custom exception that is thrown when there is a class cast exception
- * for a JsonValue.
- *
- * @property clazz The class that caused the exception.
+ * @property clazz The Kotlin class that caused the cast exception.
  */
 class JsonValueClassCastException(val clazz: KClass<*>) : Exception() {
-    override val message: String?
     /**
-     * Get the message of the exception.
-     *
-     * @return The message of the exception.
+     * The detail message string of this exception.
      */
-    get() = "JsonValue Class cast Exception : ${clazz.simpleName}"
+    override val message: String?
+        get() = "JsonValue Class cast Exception : ${clazz.simpleName}"
 }

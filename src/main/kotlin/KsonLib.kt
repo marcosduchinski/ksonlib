@@ -10,24 +10,31 @@ import kotlin.reflect.full.primaryConstructor
 
 /**
  * KsonLib is a library for serializing Kotlin objects to JSON format.
- * It supports the following types: Int, Double, String, Boolean, List, Map, and custom data classes. Other types
- * are not supported yet and will throw an exception.
+ * It supports the following types: Int, Double, String, Boolean, List, Map, and custom data classes.
+ * Other types are not supported yet and will throw an exception.
  *
- * @param obj The object to be serialized to JSON.
+ * @property obj The object to be serialized to JSON.
  */
 class KsonLib(val obj: Any? = null) {
 
+    /**
+     * Matches a Kotlin class property to a constructor parameter by name.
+     *
+     * @param parameter The constructor parameter to match.
+     * @return The corresponding property in the Kotlin class.
+     */
     private fun KClass<*>.matchProperty(parameter: KParameter): KProperty<*> {
         return declaredMemberProperties.first { it.name == parameter.name }
     }
 
     /**
-     * Maps the given value to a JSON value.
-     * It checks the type of the value and converts it to the corresponding JSON type.
+     * Maps a Kotlin value to its corresponding JSON value representation.
+     *
+     * Supports null, enum, primitive types, lists, maps, and data classes.
      *
      * @param value The value to be mapped.
-     * @return The mapped JSON value.
-     * @throws JsonValueUnsupportedTypeException if the value type is not supported.
+     * @return The mapped [JsonValue].
+     * @throws JsonValueUnsupportedTypeException if the value's type is unsupported.
      */
     private fun mapType(value: Any?): JsonValue = when {
         value == null -> JsonNull
@@ -36,14 +43,8 @@ class KsonLib(val obj: Any? = null) {
         value is Double -> JsonNumber(value)
         value is String -> JsonString(value)
         value is Boolean -> JsonBoolean(value)
-        value is List<*> -> JsonArray(value.map {
-            mapType(it)
-        }.toMutableList())
-
-        value is Map<*, *> -> JsonObject(value.entries.associate { (k, v) ->
-            k.toString() to mapType(v)
-        }.toMutableMap())
-
+        value is List<*> -> JsonArray(value.map { mapType(it) }.toMutableList())
+        value is Map<*, *> -> JsonObject(value.entries.associate { (k, v) -> k.toString() to mapType(v) }.toMutableMap())
         value::class.isData && value !is JsonValue -> {
             val clazz = value::class
             val members = clazz.primaryConstructor?.parameters?.associate { param ->
@@ -52,16 +53,15 @@ class KsonLib(val obj: Any? = null) {
             } ?: emptyMap()
             JsonObject(members.toMutableMap())
         }
-
         else -> throw JsonValueUnsupportedTypeException(value::class)
     }
 
-
     /**
-     * Serializes the object to JSON format.
-     * It maps the object to a JSON value and validates it.
+     * Serializes the stored object to a JSON string.
      *
-     * @return The serialized JSON string.
+     * The object is first mapped to a JSON value and validated.
+     *
+     * @return The JSON string representation.
      */
     fun asJson(): String {
         val jsonValue = mapType(obj)
@@ -70,10 +70,11 @@ class KsonLib(val obj: Any? = null) {
     }
 
     /**
-     * Serializes the object to JSON format.
-     * It maps the object to a JSON value and validates it.
+     * Serializes the stored object to a [JsonValue].
      *
-     * @return The JsonValue representation of the object.
+     * The object is first mapped and validated.
+     *
+     * @return The root [JsonValue] representing the object.
      */
     fun asJsonValue(): JsonValue {
         val jsonValue = mapType(obj)
@@ -82,11 +83,12 @@ class KsonLib(val obj: Any? = null) {
     }
 
     /**
-     * Converts the object to a JsonObject.
-     * It maps the object to a JSON value and validates it.
+     * Converts the stored object to a [JsonObject].
      *
-     * @return The JsonObject representation of the object.
-     * @throws JsonValueClassCastException if the JSON value is not a JsonObject.
+     * Validates the object and casts the result to [JsonObject].
+     *
+     * @return The [JsonObject] representation.
+     * @throws JsonValueClassCastException if the object is not a JSON object.
      */
     fun asJsonObject(): JsonObject {
         val jsonValue = mapType(obj)
@@ -95,11 +97,12 @@ class KsonLib(val obj: Any? = null) {
     }
 
     /**
-     * Converts the object to a JsonArray.
-     * It maps the object to a JSON value and validates it.
+     * Converts the stored object to a [JsonArray].
      *
-     * @return The JsonArray representation of the object.
-     * @throws JsonValueClassCastException if the JSON value is not a JsonArray.
+     * Validates the object and casts the result to [JsonArray].
+     *
+     * @return The [JsonArray] representation.
+     * @throws JsonValueClassCastException if the object is not a JSON array.
      */
     fun asJsonArray(): JsonArray {
         val jsonValue = mapType(obj)

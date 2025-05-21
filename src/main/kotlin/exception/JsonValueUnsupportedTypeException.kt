@@ -3,18 +3,14 @@ package exception
 import kotlin.reflect.KClass
 
 /**
- * *Custom Exception*
+ * Custom exception thrown when a type is not supported for conversion to a [JsonValue].
  *
- * This class represents a custom exception that is thrown when there is an unsupported type for a JsonValue.
- *
- * @property clazz The class which type is not supported.
- * */
+ * @property clazz The Kotlin class of the unsupported type.
+ */
 class JsonValueUnsupportedTypeException(val clazz: KClass<*>) : Exception() {
-    override val message: String?
     /**
-     * Get the message of the exception.
-     *
-     * @return The message of the exception.
+     * The detail message string of this exception.
      */
-    get() = "Not supported type to JsonValue: ${clazz.simpleName}"
+    override val message: String?
+        get() = "Not supported type to JsonValue: ${clazz.simpleName}"
 }

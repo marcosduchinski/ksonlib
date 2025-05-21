@@ -5,19 +5,27 @@ import model.JsonArray
 import model.JsonValue
 
 /**
- * ValidationVisitor is a visitor that validates JSON values.
- * It checks if all elements in a JsonArray are of the same type.
+ * A visitor that validates JSON values.
+ *
+ * Specifically, it checks whether all elements in a [JsonArray] are of the same type.
  */
 class ValidationVisitor : JsonVisitor {
+
+    /**
+     * Visits a [JsonValue] and performs validation if it's a [JsonArray].
+     *
+     * @param value The JSON value to visit and validate.
+     */
     override fun visit(value: JsonValue) {
         if (value is JsonArray) {
             validateJsonArray(value)
         }
     }
+
     /**
-     * Validates a JsonArray by checking if all elements are of the same type.
+     * Validates that all elements in the given [JsonArray] are of the same type.
      *
-     * @param value The JsonArray to validate.
+     * @param value The [JsonArray] to validate.
      * @throws JsonValueValidationException if the array contains elements of different types.
      */
     private fun validateJsonArray(value: JsonArray) {
