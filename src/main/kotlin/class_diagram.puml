@@ -80,7 +80,6 @@ package visitor #DDDDDD {
 class KsonLib {
     -obj: Any?
     +asJson(): String
-    +asJsonValue(): JsonValue
     +asJsonObject(): JsonObject
     +asJsonArray(): JsonArray
 }

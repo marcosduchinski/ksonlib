@@ -69,18 +69,6 @@ class KsonLib(val obj: Any? = null) {
         return jsonValue.asJson()
     }
 
-    /**
-     * Serializes the stored object to a [JsonValue].
-     *
-     * The object is first mapped and validated.
-     *
-     * @return The root [JsonValue] representing the object.
-     */
-    fun asJsonValue(): JsonValue {
-        val jsonValue = mapType(obj)
-        jsonValue.accept(ValidationVisitor())
-        return jsonValue
-    }
 
     /**
      * Converts the stored object to a [JsonObject].
